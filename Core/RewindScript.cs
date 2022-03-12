@@ -2,18 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace Core
 {
     public abstract class RewindScript<T> : MonoBehaviour
     {
+        // FIELDS
         [SerializeField]
         private float maxRewTime;
         private List<T> timePoints;
         private bool isRewinding;
         private int maxTimePoints;
 
+        // PROPERTIES
         public T TopElement => timePoints[0];
         public bool IsRewinding => isRewinding;
+
+        // IN-GAME METHODS
         private void Start()
         {
             maxTimePoints = (int) Mathf.Round(maxRewTime / Time.fixedDeltaTime);
@@ -37,6 +42,7 @@ namespace Core
             }
         }
 
+        // PUBLIC METHODS
         public void StartRewind()
         {
             if (isRewinding == true) return;
@@ -51,9 +57,7 @@ namespace Core
         }
 
         public abstract void Rewind();
-
         public abstract T Record();
-
     }
 }
 
