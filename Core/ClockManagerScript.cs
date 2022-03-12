@@ -9,7 +9,7 @@ namespace Core
     {
         public GameObject clockPrefab;
         public GameObject clock;
-        public ClockScript clockScript;
+        private ClockScript clockScript;
         [SerializeField] private float offset;
 
         private void Start()
