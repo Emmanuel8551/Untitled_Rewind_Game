@@ -10,5 +10,11 @@ namespace Player
         public InputScript inputScript;
         public MoveScript moveScript;
         public RewindScript<TimePoint> rewindScript;
+        public ClockManagerScript clockScript;
+
+        private void OnDestroy()
+        {
+            Destroy(clockScript.clock);
+        }
     }
 }

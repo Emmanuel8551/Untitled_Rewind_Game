@@ -11,11 +11,15 @@ namespace Player
         private Vector3 desiredDirection;
         public MainScript mainScript;
 
-
         private void Update()
         {
             if (mainScript.rewindScript.IsRewinding) return;
+            CalculateDirection();
+            MoveToDirection();
+        }
 
+        private void CalculateDirection()
+        {
             if (mainScript.inputScript.IsRightPressed) desiredDirection.x = 1;
             else if (mainScript.inputScript.IsLeftPressed) desiredDirection.x = -1;
             else desiredDirection.x = 0;
@@ -23,11 +27,9 @@ namespace Player
             if (mainScript.inputScript.IsUpPressed) desiredDirection.y = 1;
             else if (mainScript.inputScript.IsDownPressed) desiredDirection.y = -1;
             else desiredDirection.y = 0;
-
-            Move();
         }
 
-        private void Move ()
+        private void MoveToDirection()
         {
             if (desiredDirection.magnitude == 0) return;
             transform.position += desiredDirection.normalized * speed * Time.deltaTime;

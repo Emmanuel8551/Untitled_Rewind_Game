@@ -9,6 +9,17 @@ namespace Player
     {
         public MainScript mainScript;
 
+        private void Update()
+        {
+            ManageRewind();
+        }
+
+        private void ManageRewind ()
+        {
+            if (mainScript.inputScript.IsSpaceDown) StartRewind();
+            else if (mainScript.inputScript.IsSpaceUp) StopRewind();
+        }
+
         public override void Rewind ()
         {
             gameObject.transform.position = TopElement.position;

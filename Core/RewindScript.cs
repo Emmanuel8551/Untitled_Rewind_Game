@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace Core
 {
     public abstract class RewindScript<T> : MonoBehaviour
@@ -17,13 +16,14 @@ namespace Core
         // PROPERTIES
         public T TopElement => timePoints[0];
         public bool IsRewinding => isRewinding;
+        public int TimePointsRemaining => timePoints.Count;
+        public int MaxTimePoints => maxTimePoints;
 
         // IN-GAME METHODS
         private void Start()
         {
             maxTimePoints = (int) Mathf.Round(maxRewTime / Time.fixedDeltaTime);
             timePoints = new List<T>();
-
         }
 
         private void FixedUpdate()
@@ -31,13 +31,11 @@ namespace Core
             if (isRewinding)
             {
                 Rewind();
-                if (timePoints.Count == 1) StopRewind();
-                timePoints.RemoveAt(0);
+                CheckAreRemainingTimePoints();
             }
             else
             {
-                if (isRewinding == true) return;
-                if (timePoints.Count >= maxTimePoints) timePoints.RemoveAt(timePoints.Count - 1);
+                ManageLastPoint();
                 timePoints.Insert(0, Record());
             }
         }
@@ -58,6 +56,17 @@ namespace Core
 
         public abstract void Rewind();
         public abstract T Record();
+
+        private void CheckAreRemainingTimePoints ()
+        {
+            if (timePoints.Count == 1) StopRewind();
+            timePoints.RemoveAt(0);
+        }
+
+        private void ManageLastPoint()
+        {
+            if (timePoints.Count >= maxTimePoints) timePoints.RemoveAt(timePoints.Count - 1);
+        }
     }
 }
 
