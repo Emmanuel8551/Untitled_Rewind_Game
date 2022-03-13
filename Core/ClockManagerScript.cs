@@ -8,9 +8,11 @@ namespace Core
     public abstract class ClockManagerScript : MonoBehaviour
     {
         public GameObject clockPrefab;
-        public GameObject clock;
+        private GameObject clock;
         private ClockScript clockScript;
         [SerializeField] private float offset;
+
+        public GameObject Clock => clock;
 
         private void Start()
         {

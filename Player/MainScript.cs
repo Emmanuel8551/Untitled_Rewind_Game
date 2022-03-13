@@ -14,7 +14,7 @@ namespace Player
 
         private void OnDestroy()
         {
-            Destroy(clockScript.clock);
+            Destroy(clockScript.Clock);
         }
     }
 }
