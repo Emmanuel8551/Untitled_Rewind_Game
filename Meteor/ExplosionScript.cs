@@ -23,10 +23,17 @@ namespace Meteor
             if (mainScript.timerScript.CurTime == 0 && exploded == false) Explode();
         }
 
-        private void Explode()
+        private void Explode ()
         {
             HitObjectsInRadius();
             exploded = true;
+            HideClock();
+            mainScript.GameManager.poolsManagerScript.RetrieveToPool(gameObject);
+        }
+
+        private void HideClock ()
+        {
+            mainScript.clockManagerScript.Clock.SetActive(false);
         }
 
         private void HitObjectsInRadius()

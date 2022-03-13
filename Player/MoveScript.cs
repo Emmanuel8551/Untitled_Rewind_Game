@@ -10,6 +10,7 @@ namespace Player
         [SerializeField] private float speed;
         private Vector3 desiredDirection;
         public MainScript mainScript;
+        [SerializeField]public Vector3[] lanes;
 
         private void Update()
         {

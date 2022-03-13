@@ -17,6 +17,7 @@ namespace Core
         private void Start()
         {
             clock = Instantiate(clockPrefab);
+            clock.SetActive(false);
             clockScript = clock.GetComponent<ClockScript>();
         }
 

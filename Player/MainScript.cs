@@ -5,16 +5,18 @@ using Core;
 
 namespace Player
 {
-    public class MainScript : MonoBehaviour
+    public class MainScript : MonoBehaviour , IPoolItem
     {
         public InputScript inputScript;
         public MoveScript moveScript;
         public RewindScript<TimePoint> rewindScript;
         public ClockManagerScript clockScript;
+        private GameManager.MainScript gameManager;
 
-        private void OnDestroy()
+        public GameManager.MainScript GameManager
         {
-            Destroy(clockScript.Clock);
+            get => gameManager;
+            set => gameManager = value;
         }
     }
 }
