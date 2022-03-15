@@ -5,41 +5,20 @@ using Core;
 
 namespace Player
 {
+    // Manages whole input, fully independet from any class
     public class InputScript : MonoBehaviour
     {
         public MainScript mainScript;
-        private bool isUpPressed;
-        private bool isDownPressed;
-        private bool isLeftPressed;
-        private bool isRightPressed;
-        private bool isSpaceUp;
-        private bool isSpaceDown;
 
-        public bool IsUpPressed => isUpPressed;
-        public bool IsDownPressed => isDownPressed;
-        public bool IsLeftPressed => isLeftPressed;
-        public bool IsRightPressed => isRightPressed;
-        public bool IsSpaceDown => isSpaceDown;
-        public bool IsSpaceUp => isSpaceUp;
+        // Arrow keys
+        public bool IsUpPressed => Input.GetKey(KeyCode.UpArrow);
+        public bool IsDownPressed => Input.GetKey(KeyCode.DownArrow);
+        public bool IsLeftPressed => Input.GetKey(KeyCode.LeftArrow);
+        public bool IsRightPressed => Input.GetKey(KeyCode.RightArrow);
 
-        private void Update()
-        {
-            CheckSpaceKeyPressed();
-            CheckArrowKeysPressed();
-        }
+        // 
+        public bool IsSpaceDown => Input.GetKeyDown(KeyCode.Space);
+        public bool IsSpaceUp => Input.GetKeyUp(KeyCode.Space);
 
-        private void CheckSpaceKeyPressed ()
-        {
-            isSpaceUp = Input.GetKeyUp(KeyCode.Space);
-            isSpaceDown = Input.GetKeyDown(KeyCode.Space);
-        }
-
-        private void CheckArrowKeysPressed ()
-        {
-            isUpPressed = Input.GetKey(KeyCode.UpArrow);
-            isDownPressed = Input.GetKey(KeyCode.DownArrow);
-            isLeftPressed = Input.GetKey(KeyCode.LeftArrow);
-            isRightPressed = Input.GetKey(KeyCode.RightArrow);
-        }
     }
 }

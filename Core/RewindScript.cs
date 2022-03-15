@@ -7,8 +7,7 @@ namespace Core
     public abstract class RewindScript<T> : MonoBehaviour
     {
         // FIELDS
-        [SerializeField]
-        private float maxRewTime;
+        [SerializeField] private float maxRewTime;
         private List<T> timePoints;
         private bool isRewinding;
         private int maxTimePoints;
@@ -47,7 +46,6 @@ namespace Core
             if (timePoints.Count == 0) return;
             isRewinding = true;
         }
-
         public void StopRewind()
         {
             if (isRewinding == false) return;
@@ -62,7 +60,6 @@ namespace Core
             if (timePoints.Count == 1) StopRewind();
             timePoints.RemoveAt(0);
         }
-
         private void ManageLastPoint()
         {
             if (timePoints.Count >= maxTimePoints) timePoints.RemoveAt(timePoints.Count - 1);

@@ -10,30 +10,22 @@ namespace Meteor
         private bool exploded;
 
         public float explosionRadius;
-        public bool Exploded => exploded;
-
-        private void Start()
-        {
-            exploded = false;
-        }
+        public bool Exploded { get => exploded; set => exploded = value; }
 
         private void FixedUpdate()
         {
             // If times out and hasnt exploded then Explode
-            if (mainScript.timerScript.CurTime == 0 && exploded == false) Explode();
+            if (mainScript.TimerScript.CurTime == 0 && exploded == false)
+            {
+                Explode();
+                //mainScript.GameManager.poolsManagerScript.RetrieveToPool(gameObject);
+            }
         }
 
         private void Explode ()
         {
             HitObjectsInRadius();
             exploded = true;
-            HideClock();
-            mainScript.GameManager.poolsManagerScript.RetrieveToPool(gameObject);
-        }
-
-        private void HideClock ()
-        {
-            mainScript.clockManagerScript.Clock.SetActive(false);
         }
 
         private void HitObjectsInRadius()

@@ -7,16 +7,21 @@ namespace Player
 {
     public class MainScript : MonoBehaviour , IPoolItem
     {
-        public InputScript inputScript;
-        public MoveScript moveScript;
-        public RewindScript<TimePoint> rewindScript;
-        public ClockManagerScript clockScript;
-        private GameManager.MainScript gameManager;
+        [SerializeField] private InputScript inputScript;
+        [SerializeField] private MoveScript moveScript;
+        [SerializeField] private RewindScript rewindScript;
+        [SerializeField] private ClockManagerScript clockManagerScript;
 
-        public GameManager.MainScript GameManager
-        {
-            get => gameManager;
-            set => gameManager = value;
-        }
+        // IPoolItem
+        public GameManager.MainScript GameManager { get; set; }
+
+        // Player Itself
+        public InputScript InputScript => inputScript;
+        public MoveScript MoveScript => moveScript;
+        public RewindScript RewindScript => rewindScript;
+        public ClockManagerScript ClockManagerScript => clockManagerScript;
+
+        public void InitializePoolObject () { }
+        public void FinalizePoolObject () { }
     }
 }

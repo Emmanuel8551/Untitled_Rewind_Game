@@ -11,12 +11,12 @@ namespace Meteor
 
         public override TimePoint Record()
         {
-            return new TimePoint(mainScript.timerScript.CurTime);
+            return new TimePoint(mainScript.TimerScript.CurTime);
         }
 
         public override void Rewind()
         {
-            mainScript.timerScript.CurTime = TopElement.curTime;
+            mainScript.TimerScript.CurTime = TopElement.curTime;
         }
     }
 

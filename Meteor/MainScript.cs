@@ -5,16 +5,39 @@ using Core;
 
 namespace Meteor
 {
-    public class MainScript : MonoBehaviour , IPoolItem
+    public class MainScript : MonoBehaviour , IPoolItem, IMain<TimePoint>
     {
-        public ClockManagerScript clockManagerScript;
-        public RewindScript rewindScript;
-        public ExplosionScript explosionScript;
-        public TimerScript timerScript;
-        private GameManager.MainScript gameManager;
-        public GameManager.MainScript GameManager {
-            get => gameManager;
-            set => gameManager = value;
+        [SerializeField] private ClockManagerScript clockManagerScript;
+        [SerializeField] private RewindScript rewindScript;
+        [SerializeField] private ExplosionScript explosionScript;
+        [SerializeField] private TimerScript timerScript;
+        [SerializeField] private MovementScript movementScript;
+
+        // IPoolItem
+        public GameManager.MainScript GameManager { get; set; }
+
+        //IMain
+        public Core.ClockManagerScript ClockManagerScript => clockManagerScript;
+        public Core.MovementScript MovementScript => movementScript;
+        public Core.RewindScript<TimePoint> RewindScript => rewindScript;
+
+        // Meteor Itself
+        public ExplosionScript ExplosionScript => explosionScript;
+        public TimerScript TimerScript => timerScript;
+        
+
+
+        public void InitializePoolObject ()
+        {
+            explosionScript.Exploded = false;
+            timerScript.CurTime = timerScript.ExplosionTime;
+        }
+
+        public void FinalizePoolObject ()
+        {
+            clockManagerScript.Clock.SetActive(false);
         }
     }
+
+
 }

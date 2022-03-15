@@ -5,6 +5,8 @@ using Core;
 
 namespace Player
 {
+    // Takes information from input and manages rewind
+    // Depends from input only
     public class RewindScript : RewindScript<TimePoint>
     {
         public MainScript mainScript;
@@ -16,15 +18,14 @@ namespace Player
 
         private void ManageRewind ()
         {
-            if (mainScript.inputScript.IsSpaceDown) StartRewind();
-            else if (mainScript.inputScript.IsSpaceUp) StopRewind();
+            if (mainScript.InputScript.IsSpaceDown) StartRewind();
+            else if (mainScript.InputScript.IsSpaceUp) StopRewind();
         }
 
         public override void Rewind ()
         {
             gameObject.transform.position = TopElement.position;
         }
-
         public override TimePoint Record ()
         {
             return new TimePoint(transform.position);

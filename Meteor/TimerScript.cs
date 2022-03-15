@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Meteor
 {
+    // Fully Independent
     public class TimerScript : MonoBehaviour
     {
         private float curTime;
@@ -12,11 +13,6 @@ namespace Meteor
 
         public float CurTime { get => curTime; set => curTime = value; }
         public float ExplosionTime => explosionTime;
-
-        private void Start()
-        {
-            curTime = explosionTime;
-        }
 
         private void FixedUpdate()
         {

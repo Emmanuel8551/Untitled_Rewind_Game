@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IPoolItem
 {
     public GameManager.MainScript GameManager { get; set; }
+    public void InitializePoolObject ();
+    public void FinalizePoolObject ();
 }

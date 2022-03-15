@@ -9,14 +9,20 @@ namespace Meteor
     {
         public MainScript mainScript;
 
-        public override float CalculateFraction()
+        private void Update()
         {
-            return mainScript.timerScript.CurTime / mainScript.timerScript.ExplosionTime;
+            ManageDisplay();
         }
 
-        public override bool EvaluateActiveSelf()
+        private void ManageDisplay()
         {
-            return mainScript.explosionScript.Exploded == false;
+            if (mainScript.ExplosionScript.Exploded == false) StartDisplay();
+            else StopDisplay();
+        }
+
+        public override float CalculateFraction()
+        {
+            return mainScript.TimerScript.CurTime / mainScript.TimerScript.ExplosionTime;
         }
     }
 }

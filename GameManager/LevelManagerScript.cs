@@ -8,59 +8,71 @@ namespace GameManager
 {
     public class LevelManagerScript : MonoBehaviour
     {
-        public MainScript mainScript;
-        public float spawnOffset;
-        public float stepTimeDifference;
-        private Level level;
+        #region Fields
+        [SerializeField] private MainScript mainScript;
+        [SerializeField] private float spawnOffset;
+        [SerializeField] private float stepTimeDifference;
+        [SerializeField] private Level[] levels;
+        [SerializeField] private string[] dictionary;
+        #endregion
 
         private void Start()
         {
-            level.dictionary = new string[] { "Meteor" };
-            level.waves = new Wave[1];
-            level.waves[0].large = 1;
-            level.waves[0].lineTop = new int[] {1};
-            level.waves[0].lineMid = new int[] {1};
-            level.waves[0].lineBot = new int[] {0};
-            StartCoroutine(LoadWave(level.waves[0]));
+            LoadLevel(levels[0]);
         }
-
-        private IEnumerator LoadWave (Wave wave)
+         
+        public void LoadLevel (Level levelToLoad)
         {
-            for (int i = 0; i < wave.large; i++)
+            for (int waveIndex = 0; waveIndex < levelToLoad.waves.Length; waveIndex++)
             {
-                yield return new WaitForSeconds(stepTimeDifference);
-                LoadStep(wave.lineTop[i], wave.lineMid[i], wave.lineBot[i]);
+                StartCoroutine(LoadWave(levelToLoad.waves[waveIndex]));
             }
         }
 
-        private void LoadStep (int top, int mid, int bot)
+        #region Private Methods
+        private IEnumerator LoadWave (Wave wave)
         {
-            InstantiateItemInPosition(0, top);
-            InstantiateItemInPosition(1, mid);
-            InstantiateItemInPosition(2, bot);
+            for (int i = 0; i < wave.lanes.Length; i++)
+            {
+                yield return new WaitForSeconds(stepTimeDifference);
+                LoadStep(wave.lanes[i].x, wave.lanes[i].y, wave.lanes[i].z);
+            }
         }
-
-        private void InstantiateItemInPosition (int lane, int item)
+        private void LoadStep (int topLaneItemCode, int midLaneItemCode, int botLaneItemCode)
         {
-            if (item == 0) return;
-            Vector3 position = mainScript.player.moveScript.lanes[lane];
+            InstantiateItemInPosition(0, FindItemNameInDictionary(topLaneItemCode));
+            InstantiateItemInPosition(1, FindItemNameInDictionary(midLaneItemCode));
+            InstantiateItemInPosition(2, FindItemNameInDictionary(botLaneItemCode));
+        }
+        private void LoadStep (float topLaneItemCode, float midLaneItemCode, float botLaneItemCode)
+        {
+            LoadStep((int)topLaneItemCode, (int)midLaneItemCode, (int)botLaneItemCode);
+        }
+        private void InstantiateItemInPosition (int lane, string itemName)
+        {
+            if (itemName == "none") return;
+            Vector3 position = mainScript.Player.MoveScript.lanes[lane];
             position.x += spawnOffset;
-            GameObject temp = mainScript.poolsManagerScript.InstansiateFromPool(level.dictionary[item - 1], position);
+            mainScript.PoolsManager.InstansiateFromPool(itemName, position);
         }
+        private string FindItemNameInDictionary (int itemCode)
+        {
+            string itemName = dictionary[itemCode];
+            return itemName;
+        }
+        #endregion
     }
 
+    [Serializable]
     public struct Level
     {
-        public string[] dictionary;
         public Wave[] waves;
     }
 
+    [Serializable]
     public struct Wave
     {
-        public int large; 
-        public int[] lineTop;
-        public int[] lineMid;
-        public int[] lineBot;
+        public Vector3[] lanes;
     }
 }
 

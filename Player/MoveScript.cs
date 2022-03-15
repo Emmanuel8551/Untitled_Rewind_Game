@@ -5,28 +5,31 @@ using Core;
 
 namespace Player
 {
+    // Takes input information and IsRewind from rewindScript and moves the player
+    // Depends from input and rewind
     public class MoveScript : MonoBehaviour
     {
+        [SerializeField] private MainScript mainScript;
         [SerializeField] private float speed;
-        private Vector3 desiredDirection;
-        public MainScript mainScript;
-        [SerializeField]public Vector3[] lanes;
+        [SerializeField] public Vector3[] lanes;
 
+        private Vector3 desiredDirection;
+        
         private void Update()
         {
-            if (mainScript.rewindScript.IsRewinding) return;
+            if (mainScript.RewindScript.IsRewinding) return;
             CalculateDirection();
             MoveToDirection();
         }
 
         private void CalculateDirection()
         {
-            if (mainScript.inputScript.IsRightPressed) desiredDirection.x = 1;
-            else if (mainScript.inputScript.IsLeftPressed) desiredDirection.x = -1;
+            if (mainScript.InputScript.IsRightPressed) desiredDirection.x = 1;
+            else if (mainScript.InputScript.IsLeftPressed) desiredDirection.x = -1;
             else desiredDirection.x = 0;
 
-            if (mainScript.inputScript.IsUpPressed) desiredDirection.y = 1;
-            else if (mainScript.inputScript.IsDownPressed) desiredDirection.y = -1;
+            if (mainScript.InputScript.IsUpPressed) desiredDirection.y = 1;
+            else if (mainScript.InputScript.IsDownPressed) desiredDirection.y = -1;
             else desiredDirection.y = 0;
         }
 

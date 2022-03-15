@@ -3,99 +3,125 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace GameManager
+namespace GameManager 
 {
     public class PoolsManagerScript : MonoBehaviour
     {
+        #region Fields
         [SerializeField] private List<Pool> pools;
-        public MainScript mainScript;
+        [SerializeField] private MainScript mainScript;
+        #endregion
 
+        #region InGame Methods
         private void Start()
         {
-            CreatePools();
+            InitializePools();
         }
+        #endregion
 
+        #region Public Methods
         public GameObject InstansiateFromPool(string name, Vector3 position)
         {
-            int index = FindPoolIndex(name);
-            GameObject temp = pools[index].ReleaseItem(position);
-            return temp;
+            int indexOfPool = FindPoolIndex(name);
+            GameObject itemToRelease = pools[indexOfPool].ReleaseItem(position);
+            return itemToRelease;
         }
-
-        public GameObject InstansiateFromPool (string name)
+        public GameObject InstansiateFromPool(string name)
         {
-            return InstansiateFromPool(name, new Vector3(0, 0));
+            return InstansiateFromPool(name, Vector3.zero);
         }
-
-        public void RetrieveToPool (GameObject item)
+        public void RetrieveToPool(GameObject itemToRetrieve)
         {
-            int index = FindPoolIndex(item.name);
-            pools[index].RetrieveItem(item);
+            int indexOfPool = FindPoolIndex(itemToRetrieve.name);
+            pools[indexOfPool].RetrieveItem(itemToRetrieve);
         }
+        #endregion
 
-        private void CreatePools ()
+        #region Private Methods
+        private void InitializePools()
         {
-            for (int i = 0; i < pools.Count; i++) pools[i].CreateItems();
+            for (int poolIndex = 0; poolIndex < pools.Count; poolIndex++) pools[poolIndex].GeneratePoolItems();
         }
-
-        private int FindPoolIndex (string name)
+        private int FindPoolIndex(string name)
         {
-            for (int i = 0; i < pools.Count; i++) if (pools[i].prefab.name == name) return i;
+            for (int poolIndex = 0; poolIndex < pools.Count; poolIndex++)
+                if (pools[poolIndex].ItemPrefab.name == name)
+                    return poolIndex;
             return -1;
         }
+        #endregion
     }
 
     [Serializable]
     public class Pool
     {
-        public PoolsManagerScript poolsManagerScript;
-
-        public int maxItemCount;
+        #region Fields
+        [SerializeField] private int maxItemCount;
+        [SerializeField] private GameObject itemPrefab;
+        private GameObject[] currentActiveItems = new GameObject[0];
         private GameObject[] items;
-        private int curActiveItems = 0;
-        public GameObject prefab;
+        #endregion
 
-        public void CreateItems()
+        #region Properties
+        public int MaxItemCount => maxItemCount;
+        public GameObject ItemPrefab => itemPrefab;
+        #endregion
+
+        #region Public Methods
+        public void GeneratePoolItems()
         {
             items = new GameObject[maxItemCount];
-            for (int i = 0; i < maxItemCount; i++)
+            for (int itemCount = 0; itemCount < maxItemCount; itemCount++)
             {
-                GameObject temp = MonoBehaviour.Instantiate(prefab);
-                IPoolItem poolItem = temp.GetComponent<IPoolItem>();
-                poolItem.GameManager = poolsManagerScript.mainScript;
-                temp.name = prefab.name;
-                temp.SetActive(false);
-                items[i] = temp;
+                GameObject item = MonoBehaviour.Instantiate(itemPrefab);
+                IPoolItem poolItem = item.GetComponent<IPoolItem>();
+                item.name = itemPrefab.name;
+                item.SetActive(false);
+                items[itemCount] = item;
             }
         } 
-
         public GameObject ReleaseItem (Vector3 position)
         {
-            if (curActiveItems > maxItemCount) return null;
-            curActiveItems = curActiveItems + 1;
-            items[curActiveItems - 1].transform.position = position;
-            items[curActiveItems - 1].SetActive(true);
-            return items[curActiveItems - 1];
+            if (currentActiveItems.Length >= maxItemCount) return null;
+            GameObject itemToRelease = items[currentActiveItems.Length];
+            itemToRelease.transform.position = position;
+            itemToRelease.SetActive(true);
+            UpdateCurActiveItems();
+            itemToRelease.GetComponent<IPoolItem>().InitializePoolObject();
+            return itemToRelease;
         }
-
         public void RetrieveItem (GameObject item)
         {
-            int index = FindItemIndex(item);
+            int indexItemToRetrieve = FindItemIndex(item);
+            int indexLastActiveItem = currentActiveItems.Length - 1;
+            SwitchItemsPositions(indexItemToRetrieve, indexLastActiveItem);
             item.SetActive(false);
-            SwitchPositions(index, curActiveItems - 1);
+            UpdateCurActiveItems();
+            item.GetComponent<IPoolItem>().FinalizePoolObject();
         }
+        
+        #endregion
 
-        private void SwitchPositions (int pos1, int pos2)
+        #region Private Methods
+        private void SwitchItemsPositions (int pos1, int pos2)
         {
             GameObject temp = items[pos1];
             items[pos1] = items[pos2];
             items[pos2] = temp;
         }
-
         private int FindItemIndex (GameObject item)
         {
             for (int i = 0; i < items.Length; i++) if (items[i] == item) return i;
             return -1;
         }
+        private void UpdateCurActiveItems ()
+        {
+            int newNumActiveItems = 0;
+            for (int i = 0; i < maxItemCount; i++) if (items[i].activeSelf) newNumActiveItems++;
+            currentActiveItems = new GameObject[newNumActiveItems];
+            for (int i = 0; i < newNumActiveItems; i++) currentActiveItems[i] = items[i];
+        }
+
+        #endregion
     }
 }
